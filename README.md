@@ -121,28 +121,5 @@ GET /results
 Devuelve todos los resultados almacenados.
 
 -------------------------------------------------------
-## 📁 Estructura del Proyecto
-
-
-map-scraper/
-│
-├── backend/
-│   ├── app.py
-│   ├── db.py
-│   ├── scraper/
-│   │     └── core.py
-│   ├── tests/
-│   │     └── test_app.py
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── vite.config.js
-│
-├── docker-compose.yml
-└── README.md
-
--------------------------------------------------------
 
 
