@@ -144,6 +144,5 @@ map-scraper/
 └── README.md
 
 -------------------------------------------------------
-## 📁 PIPELINE
-![Frontend CI](https://github.com/tu-user/tu-repo/actions/workflows/frontend-ci.yml/badge.svg)
+
 
