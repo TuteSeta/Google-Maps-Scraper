@@ -5,7 +5,7 @@ La aplicación está totalmente dockerizada y cuenta con tests automatizados que
 
 -------------------------------------------------------
 ## 📌 Características
--------------------------------------------------------
+
 - Scraping real de Google Maps usando Selenium + Chrome.
 - API backend en Flask con arquitectura app factory.
 - Base de datos MongoDB para almacenar jobs y resultados.
@@ -17,7 +17,7 @@ La aplicación está totalmente dockerizada y cuenta con tests automatizados que
 
 -------------------------------------------------------
 ## 🛠️ Tecnologías
--------------------------------------------------------
+
 Backend:
 - Python 3.12
 - Flask
@@ -38,7 +38,7 @@ Testing:
 
 -------------------------------------------------------
 ## 🏗️ Arquitectura
--------------------------------------------------------
+
 
 Frontend (React)
      ↓
@@ -52,7 +52,7 @@ Tests (pytest) dentro o fuera de Docker
 
 -------------------------------------------------------
 ## 📦 Instalación
--------------------------------------------------------
+
 Clonar el repositorio:
 
 git clone https://github.com/tuusuario/map-scraper.git
@@ -60,7 +60,7 @@ cd map-scraper
 
 -------------------------------------------------------
 ## 🐳 Ejecución con Docker (recomendado)
--------------------------------------------------------
+
 
 Requisitos:
 - Docker
@@ -78,7 +78,7 @@ MongoDB → puerto 27017
 
 -------------------------------------------------------
 ## 🧪 Testing
--------------------------------------------------------
+
 
 ### Ejecutar tests localmente:
 cd backend
@@ -99,7 +99,7 @@ Los tests:
 
 -------------------------------------------------------
 ## 🌐 Endpoints Backend
--------------------------------------------------------
+
 
 GET /health  
 Retorna el estado de la API.
@@ -122,7 +122,7 @@ Devuelve todos los resultados almacenados.
 
 -------------------------------------------------------
 ## 📁 Estructura del Proyecto
--------------------------------------------------------
+
 
 map-scraper/
 │
@@ -145,7 +145,6 @@ map-scraper/
 
 -------------------------------------------------------
 ## 🚀 Futuras Mejoras
--------------------------------------------------------
 - Agregar paginación y filtros avanzados.
 - Exportar resultados a CSV desde el frontend.
 - Mock del scraper para tests rápidos.
@@ -154,7 +153,7 @@ map-scraper/
 
 -------------------------------------------------------
 ## 🏁 Conclusión
--------------------------------------------------------
+
 Este proyecto demuestra un flujo completo de scraping real, backend Python, frontend moderno y testing serio, todo bajo un entorno containerizado listo para producción.  
 Ideal para demostrar habilidades de Full Stack + DevOps + QA en una entrevista técnica.
 
