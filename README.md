@@ -143,11 +143,3 @@ map-scraper/
 ├── docker-compose.yml
 └── README.md
 
--------------------------------------------------------
-## 🚀 Futuras Mejoras
-- Agregar paginación y filtros avanzados.
-- Exportar resultados a CSV desde el frontend.
-- Mock del scraper para tests rápidos.
-- Pipeline de CI/CD con GitHub Actions.
-- Cache de resultados para reducir llamados a Google Maps.
-
