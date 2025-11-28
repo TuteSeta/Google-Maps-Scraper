@@ -155,5 +155,4 @@ map-scraper/
 ## 🏁 Conclusión
 
 Este proyecto demuestra un flujo completo de scraping real, backend Python, frontend moderno y testing serio, todo bajo un entorno containerizado listo para producción.  
-Ideal para demostrar habilidades de Full Stack + DevOps + QA en una entrevista técnica.
 
