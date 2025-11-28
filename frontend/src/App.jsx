@@ -31,7 +31,7 @@ function App() {
         },
         body: JSON.stringify({
           queries: [query],
-          max_results: Number(limit), // 👈 se lo mandamos al backend
+          max_results: Number(limit), 
         }),
       });
 
@@ -43,7 +43,6 @@ function App() {
       const data = await resp.json();
       const rawResults = data.results || [];
 
-      // Por si el backend devuelve más de lo pedido, lo recortamos igual
       const sliced = rawResults.slice(0, Number(limit));
 
       setResults(sliced);

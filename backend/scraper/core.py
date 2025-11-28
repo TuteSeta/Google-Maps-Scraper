@@ -12,9 +12,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import os
 
-# ------------------------------------------------------
 # DRIVER
-# ------------------------------------------------------
 def _build_driver(headless: bool = True) -> webdriver.Chrome:
     """Inicializa Chrome/Chromium WebDriver, funcionando tanto en local como en Docker."""
     options = Options()
@@ -30,13 +28,13 @@ def _build_driver(headless: bool = True) -> webdriver.Chrome:
 
     chrome_bin = os.getenv("CHROME_BIN")
     if chrome_bin:
-        options.binary_location = chrome_bin  # ej: /usr/bin/chromium en Docker
+        options.binary_location = chrome_bin  
 
     if in_docker:
         # En Docker, usamos el chromedriver instalado por apt
         service = Service("/usr/bin/chromedriver")
     else:
-        # En tu máquina local, dejamos que webdriver_manager se encargue
+        # Dejamos que webdriver_manager se encargue
         service = Service(ChromeDriverManager().install())
 
     driver = webdriver.Chrome(service=service, options=options)
@@ -44,17 +42,13 @@ def _build_driver(headless: bool = True) -> webdriver.Chrome:
 
 
 
-# ------------------------------------------------------
 # URL de búsqueda
-# ------------------------------------------------------
 def _search_url(query: str) -> str:
     encoded = urllib.parse.quote(query)
     return f"https://www.google.com/maps/search/{encoded}"
 
 
-# ------------------------------------------------------
-# Extraer datos desde una card (vista de resultados)
-# ------------------------------------------------------
+# Extraer datos desde una card del listado
 def _extract_place_from_card(card, query: str) -> Dict:
     """Extrae datos desde una card del listado principal."""
     # Nombre del local
@@ -64,13 +58,13 @@ def _extract_place_from_card(card, query: str) -> Dict:
     except:
         name = ""
 
-    # URL del local (vista detallada)
+    # URL del local 
     try:
         place_url = card.find_element(By.CSS_SELECTOR, "a.hfpxzc").get_attribute("href")
     except:
         place_url = None
 
-    # Rating y cantidad de reviews
+    # Rating
     average_rating = None
     try:
         rating_el = card.find_element(By.CSS_SELECTOR, "span.ZkP5Je")
@@ -80,21 +74,16 @@ def _extract_place_from_card(card, query: str) -> Dict:
         rating_match = re.search(r"([\d,\.]+)", aria)
         if rating_match:
             average_rating = float(rating_match.group(1).replace(",", "."))
-
-        # reviews (dentro de paréntesis)
-        reviews_match = re.search(r"\(([\d\.,]+)\)", aria)
-        if reviews_match:
-            count_str = reviews_match.group(1).replace(".", "").replace(",", "")
     except:
         pass
 
-    # Imagen previa (thumbnail)
+    # Imagen previa 
     try:
         img_url = card.find_element(By.CSS_SELECTOR, "img").get_attribute("src")
     except:
         img_url = None
 
-    # Dirección básica (texto en línea con categoría)
+    # Dirección básica 
     address = ""
     try:
         rows = card.find_elements(By.CSS_SELECTOR, "div.W4Efsd")
@@ -112,8 +101,8 @@ def _extract_place_from_card(card, query: str) -> Dict:
         "query": query,
         "name": name,
         "average_rating": average_rating,
-        "address": address,  # DE MOMENTO incompleta
-        "url": place_url,    # ESTA URL SÍ sirve
+        "address": address,  
+        "url": place_url,   
         "phone": None,
         "website": None,
         "image": img_url,
@@ -143,7 +132,7 @@ def _extract_details_from_place_page(driver):
     try:
         el = driver.find_element(By.CSS_SELECTOR, 'button[data-item-id="address"]')
         raw = el.text.strip()
-        # suele venir "\nIrigoyen 2500, M5513 Maipú, Mendoza"
+        
         address = raw.split("\n")[-1].strip()
     except:
         pass
@@ -155,9 +144,8 @@ def _extract_details_from_place_page(driver):
     }
 
 
-# ------------------------------------------------------
+
 # Esperar carga inicial del listado
-# ------------------------------------------------------
 def _wait_results_loaded(driver):
     """Espera básica para que carguen las cards del listado."""
     for _ in range(20):
@@ -180,16 +168,15 @@ def _collect_cards(driver, max_cards: int = 20, max_scrolls: int = 15):
         if len(cards) >= max_cards:
             break
 
-        # si no siguen apareciendo nuevas cards, cortamos
+        
         if len(cards) == last_len:
             scrolls += 1
         else:
-            scrolls = 0  # reset si sí aparecieron nuevas
+            scrolls = 0  
             last_len = len(cards)
 
         if cards:
             try:
-                # scrolleo hacia la última card encontrada
                 driver.execute_script("arguments[0].scrollIntoView();", cards[-1])
             except Exception:
                 pass
@@ -199,9 +186,7 @@ def _collect_cards(driver, max_cards: int = 20, max_scrolls: int = 15):
     return cards[:max_cards]
 
 
-# ------------------------------------------------------
 # Scraping principal
-# ------------------------------------------------------
 def scrape_google_maps(queries: List[str], max_per_query: int = 20) -> List[Dict]:
     """Procesa múltiples búsquedas en Google Maps y extrae datos completos."""
     driver = _build_driver(headless=True)
@@ -213,16 +198,15 @@ def scrape_google_maps(queries: List[str], max_per_query: int = 20) -> List[Dict
             driver.get(url)
             _wait_results_loaded(driver)
 
-            # 👉 ahora usamos scroll para conseguir más cards
             cards = _collect_cards(driver, max_cards=max_per_query)
 
-            # 1) leer info básica de la lista
+            # Leer info básica 
             base_places: List[Dict] = []
             for card in cards:
                 place = _extract_place_from_card(card, q)
                 base_places.append(place)
 
-            # 2) completar info con la ficha detallada
+            # Completar info con la card detallada
             for place in base_places:
                 place_url = place.get("url")
                 if place_url:
@@ -234,7 +218,6 @@ def scrape_google_maps(queries: List[str], max_per_query: int = 20) -> List[Dict
                     except Exception as e:
                         print(f"[WARN] Error obteniendo detalles: {e}")
 
-                # opcional: filtrar lugares vacíos
                 if place.get("name"):
                     all_results.append(place)
 

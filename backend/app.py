@@ -23,25 +23,20 @@ def create_app() -> Flask:
         data = request.get_json(silent=True) or {}
         queries = data.get("queries")
 
-        # Validación básica de input
         if not isinstance(queries, list) or not queries:
             return (
                 jsonify({"error": "Field 'queries' must be a non-empty list of strings"}),
                 400,
             )
 
-        # 1) Ejecutar scraping
         results = scrape_google_maps(queries)
-        # `results` viene de scraper.core, sin ObjectId ni cosas raras
-
-        # 2) Crear job en Mongo
+  
         job_doc = {
             "queries": queries,
             "result_count": len(results),
         }
         job_id = jobs_col.insert_one(job_doc).inserted_id
 
-        # 3) Preparar docs para Mongo (con ObjectId real)
         mongo_docs = []
         for r in results:
             doc = dict(r)
@@ -51,7 +46,6 @@ def create_app() -> Flask:
         if mongo_docs:
             places_col.insert_many(mongo_docs)
 
-        # 4) Preparar resultados “seguros” para devolver como JSON
         safe_results = []
         for r in results:
             safe_results.append({
@@ -81,9 +75,6 @@ def create_app() -> Flask:
         return jsonify(docs), 200
 
     return app
-
-
-
 
 if __name__ == "__main__":
     app = create_app()

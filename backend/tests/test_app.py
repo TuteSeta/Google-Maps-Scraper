@@ -1,8 +1,6 @@
-# tests/test_app.py
 import pytest
 
-
-# Intentamos primero el import "local" (cuando el proyecto está en backend/)
+# Intentamos primero el import "local" 
 try:
     # Caso host 
     from backend.app import create_app
@@ -27,6 +25,7 @@ def clean_db():
 
     yield
 
+    # Después del test
     jobs.delete_many({})
     places.delete_many({})
 
@@ -45,7 +44,6 @@ def test_health_ok(client):
 
 
 def test_scrape_invalid_body_returns_400(client):
-    # Sin "queries" o con lista vacía → 400
     resp = client.post("/scrape", json={})
     assert resp.status_code == 400
 
@@ -66,7 +64,7 @@ def test_scrape_real_flow_inserts_job_and_places(client):
 
     resp = client.post("/scrape", json=payload)
 
-    # Si algo falla en el scraper, acá se va a ver
+    # Si algo falla en el scraper
     assert resp.status_code == 200
 
     data = resp.get_json()
@@ -76,8 +74,7 @@ def test_scrape_real_flow_inserts_job_and_places(client):
 
     # Estructura mínima del resultado
     assert isinstance(data["results"], list)
-    # Puede ser que Google no devuelva nada → no asumimos cantidad fija
-
+    
     # Verificamos que haya un job en la DB
     jobs = get_collection("jobs")
     job_docs = list(jobs.find({}))
@@ -87,5 +84,5 @@ def test_scrape_real_flow_inserts_job_and_places(client):
     # Verificamos que haya places con ese job_id
     places = get_collection("places")
     place_docs = list(places.find({"job_id": job_docs[0]["_id"]}))
-    # No sabemos cuántos resultados habrá, pero al menos verificamos que no rompa
+    # Verificamos que no se rompa
     assert len(place_docs) >= 0
