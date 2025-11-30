@@ -88,10 +88,10 @@ def _extract_place_from_card(card, query: str) -> Dict:
     try:
         rows = card.find_elements(By.CSS_SELECTOR, "div.W4Efsd")
         if rows:
-            text = rows[0].text  # Ej: "Cafetería · San Lorenzo 348"
+            text = rows[0].text 
             parts = [p.strip() for p in text.split("·")]
             if len(parts) > 1:
-                address = parts[-1]  # Tomamos la parte que parece dirección
+                address = parts[-1]  
             else:
                 address = text
     except:

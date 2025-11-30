@@ -1,6 +1,5 @@
 import pytest
 
-# Intentamos primero el import "local" 
 try:
     # Caso host 
     from backend.app import create_app
@@ -26,8 +25,8 @@ def clean_db():
     yield
 
     # Después del test
-    jobs.delete_many({})
-    places.delete_many({})
+    #jobs.delete_many({})
+    #places.delete_many({})
 
 @pytest.fixture
 def client():
