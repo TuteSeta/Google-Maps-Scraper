@@ -72,8 +72,8 @@ docker compose up --build
 
 Servicios levantados:
 
-Frontend → http://localhost:8080  
-Backend → http://localhost:5000  
+Frontend → http://localhost:5173
+Backend → http://127.0.0.1:5000
 MongoDB → puerto 27017
 
 -------------------------------------------------------
