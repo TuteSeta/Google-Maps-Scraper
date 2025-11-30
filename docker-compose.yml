@@ -1,13 +1,23 @@
 version: "3.9"
 services:
+  mongo:
+    image: mongo:7.0
+    container_name: map-scraper-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+
   backend:
     build: ./backend
     container_name: map-scraper-backend
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017
-      - MONGO_DB_NAME=maps_scraper   
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB_NAME=maps_scraper
+    depends_on:
+      - mongo
 
   frontend:
     build: ./frontend
