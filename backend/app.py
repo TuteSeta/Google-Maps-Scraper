@@ -115,7 +115,6 @@ def create_app() -> Flask:
                     "id": str(job_id),
                     "queries": job.get("queries", []),
                     "result_count": job.get("result_count", 0),
-                    # timestamp aproximado usando el ObjectId
                     "created_at": job_id.generation_time.isoformat(),
                 }
             )

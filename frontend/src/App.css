@@ -110,11 +110,9 @@ body {
   max-width: 1160px;
   margin: 0 auto;
   padding: 1rem 1rem 1.5rem;
-  /* CAMBIO CLAVE para centrar el panel de inicio */
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
-  /* Estos dos aseguran el centrado vertical y horizontal */
   align-items: center; 
   justify-items: center;
 }
@@ -122,7 +120,6 @@ body {
 /* ========= PANEL / SECCIONES ========= */
 
 .panel {
-  /* Fondo original del panel (lo mantengo como fallback) */
   background: linear-gradient(
     145deg,
     rgba(15, 23, 42, 0.98),
@@ -132,7 +129,6 @@ body {
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-soft);
   padding: 1rem 1.1rem 1.3rem;
-  /* CAMBIO: Aumento el ancho máximo para que se vea más sólido en el centro */
   max-width: 600px;
 }
 
@@ -158,15 +154,15 @@ body {
 .home-panel p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 1.1rem; /* CAMBIO: Más grande */
+  font-size: 1.1rem; 
 }
 
 .home-buttons {
-  margin-top: 2.5rem; /* CAMBIO: Más espacio entre el texto y los botones */
+  margin-top: 2.5rem; 
   display: flex;
-  flex-direction: column; /* CAMBIO: Los botones se apilan verticalmente */
+  flex-direction: column; 
   justify-content: center;
-  gap: 1.2rem; /* CAMBIO: Más espacio entre botones */
+  gap: 1.2rem; 
 }
 
 /* ========= FORM SCRAPER ========= */
@@ -494,7 +490,6 @@ button {
 /* Desktop mediano (>= 900px) */
 @media (min-width: 900px) {
   .main {
-    /* Quitamos el layout de sidebar para la Home */
     grid-template-columns: minmax(0, 1fr); 
   }
 

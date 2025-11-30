@@ -61,7 +61,6 @@ cd map-scraper
 -------------------------------------------------------
 ## 🐳 Ejecución con Docker (recomendado)
 
-
 Requisitos:
 - Docker
 - Docker Compose
@@ -77,6 +76,20 @@ Backend → http://127.0.0.1:5000
 MongoDB → puerto 27017
 
 -------------------------------------------------------
+
+## 🔥 Desarrollo con Hot Reload (sin reconstruir Docker)
+
+Backend:
+Cualquier cambio en el código Python se refleja automáticamente dentro del contenedor.
+
+Frontend:
+
+Vite corre dentro del contenedor pero usa tu código local, así que también recarga automáticamente.
+
+Esto te permite trabajar sin reconstruir la imagen en cada cambio.
+
+-------------------------------------------------------
+
 ## 🧪 Testing
 
 
@@ -85,9 +98,7 @@ cd backend
 pytest
 
 ### Ejecutar tests dentro del contenedor:
-docker compose exec backend bash
-cd /app
-pytest
+docker compose exec backend pytest
 
 Los tests:
 - Crean una instancia de Flask con create_app().
@@ -107,18 +118,22 @@ Retorna el estado de la API.
 POST /scrape  
 Body:
 {
-  "queries": ["cafeterías en Mendoza"]
+  "queries": ["cafeterías en Mendoza"],
+  "max_results": 20
 }
 
-Respuesta:
+GET /jobs
+
+Retorna:
+job_id, queries, result_count, created_at
+
+GET /jobs/<job_id>/results
+Resultados de un job específico
+
+PATCH /places/<place_id>
 {
-  "job_id": "...",
-  "count": X,
-  "results": [...]
+  "contacted": true
 }
-
-GET /results  
-Devuelve todos los resultados almacenados.
 
 -------------------------------------------------------
 

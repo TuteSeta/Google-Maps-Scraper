@@ -1,5 +1,6 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { MemoryRouter } from "react-router-dom";
 import App from "./App";
 
 global.fetch = vi.fn();
@@ -8,30 +9,38 @@ beforeEach(() => {
   fetch.mockReset();
 });
 
+const renderApp = (route = "/scraper") => {
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <App />
+    </MemoryRouter>
+  );
+};
 
 test("renderiza el título principal", () => {
-  render(<App />);
+  renderApp("/"); 
+
   expect(screen.getByText("Google Maps Scraper")).toBeInTheDocument();
 });
 
-
 test("muestra error si se envía el formulario vacío", async () => {
-  render(<App />);
+  renderApp("/scraper");
 
   const btn = screen.getByText("Scrapear");
   fireEvent.click(btn);
 
   expect(
-    screen.getByText("Por favor escribí una búsqueda (ej: cafeterías en Mendoza).")
+    screen.getByText(
+      "Por favor escribí una búsqueda (ej: cafeterías en Mendoza)."
+    )
   ).toBeInTheDocument();
 });
 
-
 test("muestra loading mientras se buscan datos", async () => {
-  // Fetch queda esperando hasta que el test decida resolverlo
+  // Fetch queda pendiente hasta que el test lo resuelva
   fetch.mockImplementation(() => new Promise(() => {}));
 
-  render(<App />);
+  renderApp("/scraper");
 
   fireEvent.change(screen.getByLabelText("Búsqueda"), {
     target: { value: "cafeterías" },
@@ -41,7 +50,6 @@ test("muestra loading mientras se buscan datos", async () => {
 
   expect(screen.getByText("Buscando...")).toBeInTheDocument();
 });
-
 
 test("renderiza resultados cuando el backend responde", async () => {
   fetch.mockResolvedValueOnce({
@@ -60,7 +68,7 @@ test("renderiza resultados cuando el backend responde", async () => {
     }),
   });
 
-  render(<App />);
+  renderApp("/scraper");
 
   fireEvent.change(screen.getByLabelText("Búsqueda"), {
     target: { value: "cafeterías" },
@@ -69,14 +77,15 @@ test("renderiza resultados cuando el backend responde", async () => {
   fireEvent.click(screen.getByText("Scrapear"));
 
   expect(fetch).toHaveBeenCalledWith(
-    "http://localhost:5000/scrape",
-    expect.any(Object)
+    expect.stringContaining("/scrape"),
+    expect.objectContaining({
+      method: "POST",
+    })
   );
 
   expect(await screen.findByText("Café Test 1")).toBeInTheDocument();
   expect(screen.getByText("⭐ 4.5")).toBeInTheDocument();
 });
-
 
 test("muestra mensaje de error si el servidor responde con error", async () => {
   fetch.mockResolvedValueOnce({
@@ -86,7 +95,7 @@ test("muestra mensaje de error si el servidor responde con error", async () => {
     }),
   });
 
-  render(<App />);
+  renderApp("/scraper");
 
   fireEvent.change(screen.getByLabelText("Búsqueda"), {
     target: { value: "cafeterías" },

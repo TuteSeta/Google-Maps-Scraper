@@ -11,10 +11,6 @@ except ModuleNotFoundError:
     
 @pytest.fixture(autouse=True)
 def clean_db():
-    """
-    Limpia las colecciones antes y después de cada test.
-    Asumimos que MONGO_DB_NAME apunta a una base de pruebas.
-    """
     jobs = get_collection("jobs")
     places = get_collection("places")
 
