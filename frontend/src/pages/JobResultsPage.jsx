@@ -13,7 +13,7 @@ function JobResultsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
+  
   useEffect(() => {
     const load = async () => {
       try {
@@ -51,7 +51,6 @@ function JobResultsPage() {
   };
 
   const handleDownloadCSV = () => {
-    // Podés filtrar campos si querés
     downloadResultsAsCSV(results, "resultados-job-" + jobId + ".csv");
   };
 
