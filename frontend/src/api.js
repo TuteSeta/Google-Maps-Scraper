@@ -28,7 +28,6 @@ export async function updatePlaceContacted(placeId, contacted) {
   return handleResponse(resp);
 }
 
-// generar CSV desde el frontend
 export function downloadResultsAsCSV(results, filename = "resultados.csv") {
   if (!results || results.length === 0) return;
   const headers = Object.keys(results[0]);
