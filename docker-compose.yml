@@ -4,7 +4,8 @@ services:
     image: mongo:7.0
     container_name: map-scraper-mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
+    command: ["mongod", "--bind_ip_all"]
     volumes:
       - ./mongo-data:/data/db
 
