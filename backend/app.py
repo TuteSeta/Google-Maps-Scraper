@@ -9,7 +9,6 @@ except ImportError:
     from scraper.core import scrape_google_maps
     from db import get_collection
 
-
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app, resources={r"/*": {"origins": "*"}})
@@ -37,7 +36,7 @@ def create_app() -> Flask:
                 400,
             )
 
-        # Normalizamos y validamos max_results
+        # Validamos max_results
         if max_results is not None:
             try:
                 max_results = int(max_results)
@@ -180,6 +179,25 @@ def create_app() -> Flask:
             return jsonify({"error": "Place not found"}), 404
 
         return jsonify({"ok": True, "contacted": contacted}), 200
+    
+     # Borrar una query completa
+    @app.route("/jobs/<job_id>", methods=["DELETE", "OPTIONS"])
+    def delete_jobs(job_id):
+        if request.method == "OPTIONS":
+            return ("", 204)
+        try:
+            oid = ObjectId(job_id)
+        except Exception:
+            return jsonify({"error": "Invalid job_id"}), 400
+
+        result = jobs_col.delete_one({"_id": oid})
+        
+        if result.deleted_count == 0:
+            return jsonify({"error": "Job not found"}), 404
+        
+        places_col.delete_many({"job_id": oid})
+        
+        return jsonify({"message": "Job eliminado correctamente"}), 200
 
     return app
 

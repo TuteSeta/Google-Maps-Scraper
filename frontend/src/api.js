@@ -28,6 +28,25 @@ export async function updatePlaceContacted(placeId, contacted) {
   return handleResponse(resp);
 }
 
+export async function scrapePlaces(query, limit) {
+  const resp = await fetch(`${API_BASE_URL}/scrape`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      queries: [query],
+      max_results: Number(limit),
+    }),
+  });
+
+  return handleResponse(resp);
+}
+export async function deleteJob(jobId) {
+  const resp = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+    method: "DELETE",
+  });
+  return handleResponse(resp);
+}
+
 export function downloadResultsAsCSV(results, filename = "resultados.csv") {
   if (!results || results.length === 0) return;
   const headers = Object.keys(results[0]);
