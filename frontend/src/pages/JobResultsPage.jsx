@@ -13,7 +13,11 @@ function JobResultsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [onlyNotContacted, setOnlyNotContacted] = useState(false);
+  const [minRating, setMinRating] = useState("");
+  const [sortBy, setSortBy] = useState("name_asc");
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -56,6 +60,43 @@ function JobResultsPage() {
 
   const queryText = jobInfo?.queries?.[0];
 
+  // Filtros 
+  const filtered = results.filter((place) => {
+    
+    // filtro texto 
+    const text = `${place.name || ""} ${place.address || ""}`.toLowerCase();
+    if (!text.includes(searchTerm.toLowerCase())) return false;
+
+    // filtro solo no contactados
+    if (onlyNotContacted && place.contacted) return false;
+
+    // filtro rating mínimo
+    if (minRating) {
+      const rating = place.average_rating ?? 0;
+      if (rating < Number(minRating)) return false;
+    }
+
+    return true;
+  });
+
+  // Ordenar 
+  const sortedResults = [...filtered].sort((a, b) => {
+    const rA = a.average_rating ?? 0;
+    const rB = b.average_rating ?? 0;
+
+    switch (sortBy) {
+      case "rating_desc":
+        return rB - rA;
+      case "rating_asc":
+        return rA - rB;
+      case "name_desc":
+        return (b.name || "").localeCompare(a.name || "");
+      case "name_asc":
+      default:
+        return (a.name || "").localeCompare(b.name || "");
+    }
+  });
+
   return (
     <section className="panel fullwidth-panel">
       <div className="summary">
@@ -63,14 +104,22 @@ function JobResultsPage() {
           <h2>Resultados de la búsqueda</h2>
           <p>
             {queryText ? `"${queryText}"` : ""} ·{" "}
-            {jobInfo?.result_count ?? results.length} resultados
+            {jobInfo?.result_count ?? results.length} resultados totales
           </p>
+          {results.length > 0 && (
+            <p className="meta">
+              Mostrando {sortedResults.length} de {results.length} resultados
+              (según filtros)
+            </p>
+          )}
         </div>
         <div className="links">
           <button onClick={handleDownloadCSV} disabled={results.length === 0}>
             Descargar CSV
           </button>
-          <Link to="/jobs" className="button-link">Volver a búsquedas</Link>
+          <Link to="/jobs" className="button-link">
+            Volver a búsquedas
+          </Link>
         </div>
       </div>
 
@@ -78,7 +127,55 @@ function JobResultsPage() {
       {error && <p className="error">{error}</p>}
       {saving && <p className="meta">Guardando cambios...</p>}
 
+      {/* Barra de filtros */}
       {!loading && !error && results.length > 0 && (
+        <div className="filters-bar">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o dirección..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <label className="filter-item">
+            Rating mínimo:
+            <select
+              value={minRating}
+              onChange={(e) => setMinRating(e.target.value)}
+            >
+              <option value="">Cualquiera</option>
+              <option value="3">3.0+</option>
+              <option value="3.5">3.5+</option>
+              <option value="4">4.0+</option>
+              <option value="4.5">4.5+</option>
+            </select>
+          </label>
+
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              checked={onlyNotContacted}
+              onChange={(e) => setOnlyNotContacted(e.target.checked)}
+            />
+            Solo no contactados
+          </label>
+
+          <label className="filter-item">
+            Ordenar por:
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="name_asc">Nombre (A-Z)</option>
+              <option value="name_desc">Nombre (Z-A)</option>
+              <option value="rating_desc">Rating (mayor a menor)</option>
+              <option value="rating_asc">Rating (menor a mayor)</option>
+            </select>
+          </label>
+        </div>
+      )}
+
+      {!loading && !error && sortedResults.length > 0 && (
         <div className="table-wrapper">
           <table className="results-table">
             <thead>
@@ -91,7 +188,7 @@ function JobResultsPage() {
               </tr>
             </thead>
             <tbody>
-              {results.map((place) => (
+              {sortedResults.map((place) => (
                 <tr key={place.id}>
                   <td>{place.name || "Sin nombre"}</td>
                   <td>{place.address || "-"}</td>
@@ -115,6 +212,12 @@ function JobResultsPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {!loading && !error && results.length > 0 && sortedResults.length === 0 && (
+        <p className="empty">
+          No hay resultados que coincidan con los filtros aplicados.
+        </p>
       )}
 
       {!loading && !error && results.length === 0 && (

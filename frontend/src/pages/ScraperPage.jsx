@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { scrapePlaces } from "../api"; 
 
 function ScraperPage() {
   const [query, setQuery] = useState("");
@@ -9,48 +10,33 @@ function ScraperPage() {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setResults([]);
-    setJobId(null);
+  e.preventDefault();
+  setError("");
+  setResults([]);
+  setJobId(null);
 
-    if (!query.trim()) {
-      setError("Por favor escribí una búsqueda (ej: cafeterías en Mendoza).");
-      return;
-    }
+  if (!query.trim()) {
+    setError("Por favor escribí una búsqueda (ej: cafeterías en Mendoza).");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const resp = await fetch("http://localhost:5000/scrape", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          queries: [query],
-          max_results: Number(limit),
-        }),
-      });
+    const data = await scrapePlaces(query, limit);
+    const rawResults = data.results || [];
+    const sliced = rawResults.slice(0, Number(limit));
 
-      if (!resp.ok) {
-        const data = await resp.json().catch(() => ({}));
-        throw new Error(data.error || "Error en el servidor");
-      }
+    setResults(sliced);
+    setJobId(data.job_id || null);
+  } catch (err) {
+    console.error(err);
+    setError(err.message || "Ocurrió un error inesperado");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      const data = await resp.json();
-      const rawResults = data.results || [];
-      const sliced = rawResults.slice(0, Number(limit));
-
-      setResults(sliced);
-      setJobId(data.job_id || null);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Ocurrió un error inesperado");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>

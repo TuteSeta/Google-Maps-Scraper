@@ -129,10 +129,10 @@ body {
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-soft);
   padding: 1rem 1.1rem 1.3rem;
-  max-width: 600px;
+  max-width: 650px;
 }
 
-/* Panel especial para la Home (centrado) */
+/* Panel especial para la Home */
 .home-panel {
   text-align: center;
   padding-block: 3.5rem;
@@ -545,4 +545,98 @@ button {
   transform: translateY(-1px);
   background: linear-gradient(135deg, var(--accent-strong), #1d4ed8);
   box-shadow: 0 14px 28px rgba(37, 99, 235, 0.7);
+}
+
+/* ========= BARRA DE FILTROS (RESULTADOS) ========= */
+
+.filters-bar {
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.8rem;
+
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  background: radial-gradient(circle at top left, #0b1120 0, #020617 70%);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+
+  font-size: 0.85rem;
+}
+
+/* Input de búsqueda */
+.filters-bar > input[type="text"] {
+  flex: 1 1 180px;
+  min-width: 0;
+
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: var(--text);
+  font-size: 0.85rem;
+
+  transition: border-color 0.12s ease, box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.filters-bar > input[type="text"]::placeholder {
+  color: var(--text-soft);
+}
+
+.filters-bar > input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: #02051b;
+}
+
+/* Cada bloque de filtro (rating, solo no contactados, orden) */
+.filter-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Selects dentro de la barra */
+.filters-bar select {
+  border-radius: 999px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: var(--text);
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.filters-bar select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* Checkbox "solo no contactados" */
+.filter-item input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+}
+
+/* Responsive: en pantallas chicas, apilar en columna */
+@media (max-width: 640px) {
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-item {
+    justify-content: space-between;
+  }
 }
