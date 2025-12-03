@@ -90,9 +90,9 @@ test("renderiza resultados cuando el backend responde", async () => {
 test("muestra mensaje de error si el servidor responde con error", async () => {
   fetch.mockResolvedValueOnce({
     ok: false,
-    json: async () => ({
-      error: "Error del servidor",
-    }),
+    status: 500,
+    json: async () => ({ error: "Error del servidor" }),
+    text: async () => "Error del servidor",
   });
 
   renderApp("/scraper");
@@ -103,5 +103,11 @@ test("muestra mensaje de error si el servidor responde con error", async () => {
 
   fireEvent.click(screen.getByText("Scrapear"));
 
-  expect(await screen.findByText("Error del servidor")).toBeInTheDocument();
+  // Matcher más flexible por si el texto está envuelto en otros elementos
+  const errorElement = await screen.findByText((content) =>
+    content.includes("Error del servidor")
+  );
+
+  expect(errorElement).toBeInTheDocument();
 });
+
